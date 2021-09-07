@@ -62,9 +62,7 @@ export default function BasicRadarChart(props) {
   };
 
   return (
-    <main className={styles.main}>
-      <h1 className={styles.title}>Vizzuality Frontend skills</h1>
-      <p>Data registered on 22 June 2020</p>
+    <main>
       <div className={styles.sections}>
         {categorySkills &&
           Object.keys(SECTIONS).map((section) => (

@@ -1,6 +1,6 @@
 import { createElement } from 'react';
 import MainComponent from './main-component';
-import data from '../../data/data.json';
+import data from '../../data/data-2020.json';
 import groupBy from 'lodash/groupBy';
 import trim from 'lodash/trim';
 import uniqBy from 'lodash/uniqBy';
@@ -66,4 +66,3 @@ function MainContainer() {
 }
 
 export default MainContainer;
-
