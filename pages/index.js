@@ -20,8 +20,10 @@ export default function Home() {
       </Head>
       <div className={styles.main} >
         <h1 className={styles.title}>Vizzuality Frontend skills</h1>
-        <p>Data registered on {selectedSource}</p>
-        <Select options={options} onChange={(s) => setSource(s.value)} className={styles.dropdown} value={{ label: selectedSource, value: selectedSource }} />
+        <div className={styles.date}>
+          <p>Data registered on {selectedSource}</p>
+          <Select options={options} onChange={(s) => setSource(s.value)} className={styles.dropdown} value={{ label: selectedSource, value: selectedSource }} />
+        </div>
         <Main source={selectedSource}/>
       </div>
     </div>

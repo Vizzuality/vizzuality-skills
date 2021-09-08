@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { format } from 'd3-format';
 import sortBy from 'lodash/sortBy';
 import capitalize from 'lodash/capitalize';
@@ -6,26 +6,20 @@ import { RadarChart } from 'react-vis';
 import styles from './radar.module.scss';
 import cx from 'classnames';
 
-const colors = {
-  learning: '#F49F0A',
-  'want to learn': '#EFCA08',
-  'not interested': '#A27E6F',
-  expert: '#11403F',
-  competent: '#2BA4A0',
-  'basic knowledge': '#CFF2F2',
-  'no knowledge': '#ddd'
-};
-
-export default function BasicRadarChart(props) {
-  const { width, height, data, skills, isUnfiltered } = props;
+export default function Radar(props) {
+  const { width, height, data, skills, colors, isUnfiltered, domain = [0, 11] } = props;
   const [selectedValues, selectValues] = useState(data.map(d => d.name));
   const [hoveredCell, setHoveredCell] = useState(null);
+
+  useEffect(() => {
+    selectValues(data.map(d => d.name))
+  }, [data]);
+
   const domainNames = skills.map(s => s.skill);
   const domains = domainNames.map((skill) => ({
     name: skill,
-    domain: [0, 11]
+    domain
   }));
-
   const dataWithColors = data.map((d) => ({
     ...d,
     stroke: colors[d.name],

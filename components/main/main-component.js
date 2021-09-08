@@ -15,11 +15,49 @@ const createAnalyticsEvent = ({ category, action }) => ReactGA.event({
 });
 
 export default function Main(props) {
-  const { uniqueSkills, groupedSkillsBySkill, categorySkills, skillData, source } = props;
+  const { uniqueSkills, groupedSkillsBySkill, categorySkills, skillData, interestData, source } = props;
+  const updatedSectionCategories = sectionCategories;
+  const is2020 = source === '2020';
+  if (!is2020) {
+    Object.entries(SECTIONS).forEach(([section, categories]) => {
+      updatedSectionCategories[section] = Object.keys(categories);
+    });
+  }
+
   useEffect(() => {
     ReactGA.initialize('G-11M6FDTLKM');
   }, []);
 
+  const skillRanges = is2020 ?
+  ['expert',
+  'competent',
+  'basic knowledge',
+  'no knowledge',
+  'learning',
+  'want to learn',
+  'not interested'] :
+  ['max', 'mean', 'min'];
+
+  const skillTableRanges = is2020 ? skillRanges : [4, 3, 2, 1, 0];
+
+  const colors = is2020 ? {
+    learning: '#F49F0A',
+    'want to learn': '#EFCA08',
+    'not interested': 'lightcoral',
+    expert: '#11403F',
+    competent: '#2BA4A0',
+    'basic knowledge': '#CFF2F2',
+    'no knowledge': '#ddd'
+  } : {
+    'max': '#2BA4A0',
+    'mean': '#F49F0A',
+    'min': '#eee'
+  };
+  const numberOfDevs = is2020 ? 11 : 10;
+  const interestColors = {
+    interested: 'lightgreen',
+    'not interested': 'lightcoral',
+  };
 
   const [selectedCategory, selectCategory] = useState(null);
   const [selectedSection, selectSection] = useState(null);
@@ -29,7 +67,7 @@ export default function Main(props) {
     let filteredSkills = skills;
     if (section) {
       filteredSkills = skills.filter(
-        (skill) => sectionCategories[skill.category] === section
+        (skill) => skill.category && updatedSectionCategories[skill.category.toLowerCase()] === section
       );
     }
     if (category) {
@@ -63,9 +101,9 @@ export default function Main(props) {
   };
 
   const renderCategories = () => {
-    const sections = source === '2020' ? SECTIONS_2020 : SECTIONS;
-    const getCategories = (section) => (source === '2020' ?
-      Object.keys(categorySkills).filter((category) => sectionCategories[category] === section) :
+    const sections = is2020 ? SECTIONS_2020 : SECTIONS;
+    const getCategories = (section) => (is2020 ?
+      Object.keys(categorySkills).filter((category) => updatedSectionCategories[category] === section) :
       Object.keys(sections[section])
     );
     return sections && Object.keys(sections).map((section) => (
@@ -119,8 +157,26 @@ export default function Main(props) {
         height={800}
         data={skillData}
         skills={filteredSkills}
+        skillRanges={skillRanges}
         isUnfiltered={!selectedSection && !selectedCategory}
+        colors={colors}
+        domain={is2020 ? [0, numberOfDevs] : [0, 4]}
       />
+      {!is2020 && (
+        <Radar
+          width={800}
+          height={800}
+          data={interestData}
+          skills={filteredSkills}
+          skillRanges={[
+            'interested',
+            'not interested'
+          ]}
+          isUnfiltered={!selectedSection && !selectedCategory}
+          colors={interestColors}
+          domain={[0, numberOfDevs]}
+        />
+      )}
       <div className={styles.skillSection}>
         <label for="skill" className={styles.skillLabel}>
           Choose a skill
@@ -145,14 +201,28 @@ export default function Main(props) {
             ))}
         </datalist>
       </div>
+      {!is2020 && (
+        <details className={styles.legend}>
+          <summary>Legend</summary>
+          <div>
+            0 🤷 I've never even heard of it or I'd be uncomfortable working with it!
+          </div>
+          <div>
+            1 👬 I'd be comfortable,but would need support
+          </div>
+          <div>
+            2 🐢 I'd be comfortable alone,but it would take more time
+          </div>
+          <div>
+            3 🐎 I'd be comfortable alone
+          </div>
+          <div>
+            4 🧙‍♀️ I would be able to explain every concept in detail and work in very advanced features
+          </div>
+        </details>
+      )}
       <div className={styles.skillNames}>
-        <SkilledNames selectedSkill={selectedSkill} value={'expert'} />
-        <SkilledNames selectedSkill={selectedSkill} value={'competent'} />
-        <SkilledNames selectedSkill={selectedSkill} value={'basic knowledge'} />
-        <SkilledNames selectedSkill={selectedSkill} value={'no knowledge'} />
-        <SkilledNames selectedSkill={selectedSkill} value={'learning'} />
-        <SkilledNames selectedSkill={selectedSkill} value={'want to learn'} />
-        <SkilledNames selectedSkill={selectedSkill} value={'not interested'} />
+        {skillTableRanges.map(skillRange =>  <SkilledNames key={skillRange} selectedSkill={selectedSkill} value={skillRange} />)}
       </div>
     </main>
   );
