@@ -135,7 +135,7 @@ export default function Main(props) {
           domain={[0, numberOfDevs]}
         />
       )}
-      <SkillSection {...{ selectedSkill, selectSkill, uniqueSkills, is2020, skillTableRanges, groupedSkillsBySkill }} />
+      <SkillSection {...{ selectedSkill, selectSkill, uniqueSkills, is2020, skillTableRanges, groupedSkillsBySkill, createAnalyticsEvent }} />
     </main>
   );
 }

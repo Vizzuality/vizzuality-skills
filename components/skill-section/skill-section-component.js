@@ -20,7 +20,7 @@ const SkilledNames = ({ selectedSkill, value, groupedSkillsBySkill }) => {
   );
 };
 
-export default function SkillSection({ selectedSkill, selectSkill, uniqueSkills, is2020, skillTableRanges, groupedSkillsBySkill }) {
+export default function SkillSection({ selectedSkill, selectSkill, uniqueSkills, is2020, skillTableRanges, groupedSkillsBySkill, createAnalyticsEvent }) {
   return (
     <>
       <div className={styles.skillSection}>
