@@ -5,7 +5,7 @@ import groupBy from 'lodash/groupBy';
 import trim from 'lodash/trim';
 import uniqBy from 'lodash/uniqBy';
 
-function MainContainer() {
+function MainContainer(props) {
   const totalSkills = [];
   const allSkills = [];
   data.forEach((d) => {
@@ -62,7 +62,7 @@ function MainContainer() {
     groupedSkillsBySkill,
     categorySkills
   };
-  return createElement(MainComponent, dataProps);
+  return createElement(MainComponent, { ...dataProps, ...props });
 }
 
 export default MainContainer;

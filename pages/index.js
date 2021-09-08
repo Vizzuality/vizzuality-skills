@@ -22,7 +22,7 @@ export default function Home() {
         <h1 className={styles.title}>Vizzuality Frontend skills</h1>
         <p>Data registered on {selectedSource}</p>
         <Select options={options} onChange={(s) => setSource(s.value)} className={styles.dropdown} value={{ label: selectedSource, value: selectedSource }} />
-        <Main />
+        <Main source={selectedSource}/>
       </div>
     </div>
   );

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import capitalize from 'lodash/capitalize';
-import { SECTIONS, sectionCategories } from '../../data/sections';
+import { SECTIONS as SECTIONS_2020, sectionCategories } from '../../data/sections-2020';
+import { SECTIONS } from '../../data/sections-2021';
 import cx from 'classnames';
 import dynamic from 'next/dynamic';
 import ReactGA from 'react-ga';
@@ -13,10 +14,10 @@ const createAnalyticsEvent = ({ category, action }) => ReactGA.event({
   action
 });
 
-export default function BasicRadarChart(props) {
-  const { uniqueSkills, groupedSkillsBySkill, categorySkills, skillData } = props;
+export default function Main(props) {
+  const { uniqueSkills, groupedSkillsBySkill, categorySkills, skillData, source } = props;
   useEffect(() => {
-    ReactGA.initialize('G-11M6FDTLKM', { debug: true });
+    ReactGA.initialize('G-11M6FDTLKM');
   }, []);
 
 
@@ -61,50 +62,57 @@ export default function BasicRadarChart(props) {
     );
   };
 
-  return (
-    <main>
-      <div className={styles.sections}>
-        {categorySkills &&
-          Object.keys(SECTIONS).map((section) => (
-            <div className={cx(styles.section, styles[section])}>
+  const renderCategories = () => {
+    const sections = source === '2020' ? SECTIONS_2020 : SECTIONS;
+    const getCategories = (section) => (source === '2020' ?
+      Object.keys(categorySkills).filter((category) => sectionCategories[category] === section) :
+      Object.keys(sections[section])
+    );
+    return sections && Object.keys(sections).map((section) => (
+      <div className={cx(styles.section, styles[section])}>
+        <button
+          className={cx(styles.sectionTitle, {
+            [styles.blue]: section === selectedSection
+          })}
+          onClick={() => {
+            createAnalyticsEvent({
+              category: 'Section',
+              action: section
+            });
+            selectSection(selectedSection === section ? null : section);
+          }}
+        >
+          {section}
+        </button>
+        <div className={styles.categories}>
+          {getCategories(section)
+            .map((category) => (
               <button
-                className={cx(styles.sectionTitle, {
-                  [styles.blue]: section === selectedSection
+                className={cx({
+                  [styles.blue]: category === selectedCategory
                 })}
                 onClick={() => {
                   createAnalyticsEvent({
-                    category: 'Section',
-                    action: section
+                    category: 'Category',
+                    action: category
                   });
-                  selectSection(selectedSection === section ? null : section);
+                  selectCategory(
+                    selectedCategory === category ? null : category
+                  );
                 }}
               >
-                {section}
+                {category}
               </button>
-              <div className={styles.categories}>
-                {Object.keys(categorySkills)
-                  .filter((category) => sectionCategories[category] === section)
-                  .map((category) => (
-                    <button
-                      className={cx({
-                        [styles.blue]: category === selectedCategory
-                      })}
-                      onClick={() => {
-                        createAnalyticsEvent({
-                          category: 'Category',
-                          action: category
-                        });
-                        selectCategory(
-                          selectedCategory === category ? null : category
-                        );
-                      }}
-                    >
-                      {category}
-                    </button>
-                  ))}
-              </div>
-            </div>
-          ))}
+            ))}
+        </div>
+      </div>
+    ));
+  };
+
+  return (
+    <main>
+      <div className={styles.sections}>
+        {categorySkills && renderCategories()}
       </div>
       <Radar
         width={800}
