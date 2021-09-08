@@ -2,9 +2,10 @@ import { createElement } from 'react';
 import MainComponent from './main-component';
 import data2020 from '../../data/data-2020.json';
 import data2021 from '../../data/data-2021.json';
+import metadata2020 from '../../data/metadata-2020';
+import metadata2021 from '../../data/metadata-2021';
 import groupBy from 'lodash/groupBy';
 import trim from 'lodash/trim';
-import invert from 'lodash/invert';
 import uniqBy from 'lodash/uniqBy';
 import { SECTIONS } from '../../data/sections-2021';
 
@@ -19,7 +20,8 @@ Object.values(SECTIONS).map((section) => {
 
 function MainContainer(props) {
   const { source } = props;
-  const data = source === '2020' ? data2020 : data2021;
+  const is2020 = source.meta.year === '2020';
+  const data = is2020 ? data2020 : data2021;
 
   const totalSkills = [];
   const interestSkills = [];
@@ -27,7 +29,7 @@ function MainContainer(props) {
   let skillData = [];
   let interestData = [];
 
-  if (source === '2020') {
+  if (is2020) {
     data.forEach((d) => {
       const regex = /(.+)\[(.+)]/;
       const parseText = (text) => trim(text.toLowerCase());
@@ -135,7 +137,46 @@ function MainContainer(props) {
     groupedSkillsBySkill,
     categorySkills
   };
-  return createElement(MainComponent, { ...dataProps, ...props });
+
+  const skillRanges = is2020 ?
+    ['expert',
+    'competent',
+    'basic knowledge',
+    'no knowledge',
+    'learning',
+    'want to learn',
+    'not interested'] :
+    ['max', 'mean', 'min'];
+
+  const skillTableRanges = is2020 ? skillRanges : [4, 3, 2, 1, 0];
+
+  const colors = is2020 ? {
+    learning: '#F49F0A',
+    'want to learn': '#EFCA08',
+    'not interested': 'lightcoral',
+    expert: '#11403F',
+    competent: '#2BA4A0',
+    'basic knowledge': '#CFF2F2',
+    'no knowledge': '#ddd'
+  } : {
+    'max': '#2BA4A0',
+    'mean': '#F49F0A',
+    'min': '#eee'
+  };
+  const numberOfDevs = is2020 ? metadata2020.devNumber : metadata2021.devNumber;
+  const interestColors = {
+    interested: 'lightgreen',
+    'not interested': 'lightcoral',
+  };
+
+  const config = {
+    skillRanges,
+    skillTableRanges,
+    colors,
+    interestColors,
+    numberOfDevs
+  };
+  return createElement(MainComponent, { ...dataProps, ...props, is2020, config });
 }
 
 export default MainContainer;
