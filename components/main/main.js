@@ -80,7 +80,7 @@ function MainContainer(props) {
           const match = currentKey.split(' | ');
           if (!match) return;
           const [skill, type] = match && match;
-          if (['Timestamp', 'Your name'].includes(skill)) return;
+          if (['Dirección de correo electrónico', 'Timestamp', 'Your name'].includes(skill)) return;
           const value = d[currentKey];
           const category = skillCategories[skill.replace(/ /g,'')];
           allSkills.push({ skill, category });
