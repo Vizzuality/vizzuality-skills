@@ -1,9 +1,11 @@
 import React from "react";
 import { Frame, useAnimation, transform } from "framer";
+import styles from "./card.module.scss";
 
 const normalShadow = "0px 0px 10px rgba(0, 0, 0, 0.1)";
 const cardWidth = 300;
-const cardHeight = cardWidth;
+const cardHeight = cardWidth + 100;
+
 const images = {
   'Javi Abia': 'https://www.vizzuality.com/wp-content/uploads/2019/01/javier-abia-340x340.jpg',
   'Álvaro Leal': 'https://www.vizzuality.com/wp-content/uploads/2019/01/alvaro-leal-340x340.jpg',
@@ -17,20 +19,21 @@ const images = {
   'David Inga': 'https://www.vizzuality.com/wp-content/uploads/2019/01/d-inga-340x340.jpg'
 }
 
+export default function Card({ dev, className }) {
 
-
-export default function Card({ dev }) {
   const style = {
-  backgroundImage: `url(${images[dev]})`,
-  backgroundSize: "contain",
-  backgroundRepeat: "no-repeat",
-  backgroundPosition: "center",
-  boxShadow: normalShadow,
-  border: "15px solid white"
-};
+    backgroundImage: `url(${images[dev]})`,
+    backgroundSize: "contain",
+    backgroundColor: "rgba(155, 255, 200, 0.1)",
+    backgroundRepeat: "no-repeat",
+    backgroundPosition: "center",
+    boxShadow: normalShadow,
+    border: "15px solid white"
+  };
+
   const anim = useAnimation();
   return (
-    <div className="App">
+    <div className={className}>
       <Frame
         perspective={800}
         center
@@ -74,7 +77,11 @@ export default function Card({ dev }) {
               boxShadow: normalShadow
             });
           }}
-        />
+        >
+          <div className={styles.cardHeader}>
+            Frontend dev
+          </div>
+        </Frame>
       </Frame>
     </div>
   );

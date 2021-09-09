@@ -108,8 +108,8 @@ export default function Main(props) {
 
   return (
     <main>
-      <div className={styles.devCard}>
-        <Card dev={dev} />
+      <div className={styles.devCardContainer}>
+        <Card dev={dev} className={styles.devCard}/>
       </div>
       <ul className={styles.devLinks}>{developers.map(dev => <li>
         <Link href={`/devs/${dev}`}>

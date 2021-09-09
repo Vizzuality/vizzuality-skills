@@ -1,0 +1,14 @@
+@import '../../styles/settings.scss';
+
+.cardHeader {
+  text-transform: uppercase;
+  font-style: italic;
+  font-size: 16px;
+  padding: 12px;
+  color: #2BA4A0;
+  text-shadow:
+   -1px -1px 0 #ddf,
+    1px -1px 0 #ddf,
+    -1px 1px 0 #ddf,
+     1px 1px 0 #ddf;
+}
