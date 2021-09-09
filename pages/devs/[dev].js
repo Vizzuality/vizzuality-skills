@@ -6,10 +6,11 @@ import metadata2020 from '../../data/metadata-2020.json';
 import metadata2021 from '../../data/metadata-2021.json';
 import { useRouter } from 'next/router'
 import dynamic from 'next/dynamic';
+import Link from 'next/link'
 
 const DevMain = dynamic(() => import('../../components/dev-main/dev-main'));
 
-export default function DevPage(props) {
+export default function DevPage() {
   const router = useRouter()
   const { dev } = router.query
 
@@ -26,9 +27,10 @@ export default function DevPage(props) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className={styles.main} >
-        <h1 className={styles.title}>Vizzuality Frontend skills</h1>
-        <div className={styles.date}>
-          <p>Data registered on {selectedSource?.meta?.date}</p>
+        <Link href="/">
+          <h1 className={styles.title}>Vizzuality Frontend skills</h1>
+        </Link>        <div className={styles.date}>
+        <p>Data registered on {selectedSource?.meta?.date}</p>
           <Select options={options} onChange={setSource} className={styles.dropdown} value={selectedSource} />
         </div>
         {dev}
