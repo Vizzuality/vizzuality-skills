@@ -8,7 +8,7 @@ import ReactGA from 'react-ga';
 import styles from '../../styles/Home.module.scss';
 
 const Radar = dynamic(() => import('../radar/radar'));
-const Card = dynamic(() => import('../card/card'));
+const Card = dynamic(() => import('../card/card'), { ssr: false });
 
 const createAnalyticsEvent = ({ category, action }) => ReactGA.event({
   category,
