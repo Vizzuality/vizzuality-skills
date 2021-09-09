@@ -8,7 +8,7 @@ import ReactGA from 'react-ga';
 import styles from '../../styles/Home.module.scss';
 
 const Radar = dynamic(() => import('../radar/radar'));
-const SkillSection = dynamic(() => import('../skill-section/skill-section'));
+const Card = dynamic(() => import('../card/card'));
 
 const createAnalyticsEvent = ({ category, action }) => ReactGA.event({
   category,
@@ -16,15 +16,13 @@ const createAnalyticsEvent = ({ category, action }) => ReactGA.event({
 });
 
 export default function Main(props) {
-  const { uniqueSkills, groupedSkillsBySkill, categorySkills, skillData, interestData, is2020, developers, config } = props;
+  const { uniqueSkills, categorySkills, skillData, interestData, is2020, developers, config, dev } = props;
   const {
     skillRanges,
-    skillTableRanges,
     colors,
     interestColors
   } = config;
 
-  const numberOfDevs = developers.length;
   const updatedSectionCategories = sectionCategories;
   if (!is2020) {
     Object.entries(SECTIONS).forEach(([section, categories]) => {
@@ -38,7 +36,6 @@ export default function Main(props) {
 
   const [selectedCategory, selectCategory] = useState(null);
   const [selectedSection, selectSection] = useState(null);
-  const [selectedSkill, selectSkill] = useState(null);
 
   const getFilteredSkills = (skills, section, category) => {
     let filteredSkills = skills;
@@ -109,6 +106,9 @@ export default function Main(props) {
 
   return (
     <main>
+      <div className={styles.devCard}>
+        <Card dev={dev} />
+      </div>
       <ul className={styles.devLinks}>{developers.map(dev => <li>
         <Link href={`/devs/${dev}`}>
           <a className={styles.devLink}>{dev}</a>
@@ -125,7 +125,7 @@ export default function Main(props) {
         skillRanges={skillRanges}
         isUnfiltered={!selectedSection && !selectedCategory}
         colors={colors}
-        domain={is2020 ? [0, numberOfDevs] : [0, 4]}
+        domain={is2020 ? [0, 1] : [0, 4]}
       />
       {!is2020 && (
         <Radar
@@ -139,10 +139,9 @@ export default function Main(props) {
           ]}
           isUnfiltered={!selectedSection && !selectedCategory}
           colors={interestColors}
-          domain={[0, numberOfDevs]}
+          domain={[0, 1]}
         />
       )}
-      <SkillSection {...{ selectedSkill, selectSkill, uniqueSkills, is2020, skillTableRanges, groupedSkillsBySkill, createAnalyticsEvent }} />
     </main>
   );
 }

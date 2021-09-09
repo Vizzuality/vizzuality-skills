@@ -1,5 +1,5 @@
 import { createElement } from 'react';
-import MainComponent from './main-component';
+import MainComponent from './dev-main-component';
 import data2020 from '../../data/data-2020.json';
 import data2021 from '../../data/data-2021.json';
 import groupBy from 'lodash/groupBy';
@@ -18,7 +18,7 @@ Object.values(SECTIONS).map((section) => {
 });
 
 function MainContainer(props) {
-  const { source } = props;
+  const { source, dev } = props;
   const is2020 = source.meta.year === '2020';
   const data = is2020 ? data2020 : data2021;
 
@@ -51,12 +51,11 @@ function MainContainer(props) {
         developers.push(d['Your name']);
 
         value.forEach((v) => {
-          if (v && skill) {
+          if (v && skill && d['Your name'] === dev) {
             totalSkills.push({
               category,
               skill,
-              value: v,
-              name: d['Your name']
+              value: v
             });
           }
         });
@@ -88,19 +87,17 @@ function MainContainer(props) {
           allSkills.push({ skill, category });
           developers.push(d['Your name']);
 
-          if (type === 'Rating') {
+          if (type === 'Rating' && d['Your name'] === dev) {
             totalSkills.push({
               category,
               skill,
-              value,
-              name: d['Your name']
+              value
             });
-          } else if (type === 'Interest') {
+          } else if (type === 'Interest' && d['Your name'] === dev) {
             interestSkills.push({
               category,
               skill,
-              value,
-              name: d['Your name']
+              value
             });
           }
         });
@@ -108,25 +105,20 @@ function MainContainer(props) {
 
     const groupValuesBySkill = groupBy(totalSkills, 'skill');
     const groupInterestValuesBySkill = groupBy(interestSkills, 'skill');
-    const maxValues = { name: 'max' };
-    const meanValues = { name: 'mean' };
-    const minValues = { name: 'min' };
+    const values = { name: 'competency' };
 
     const interestedValues = { name: 'interested' };
     const notInterestedValues = { name: 'not interested' };
 
     Object.keys(groupValuesBySkill).forEach(skill => {
-      maxValues[skill] = Math.max(...groupValuesBySkill[skill].map(s => s.value));
-      minValues[skill] = Math.min(...groupValuesBySkill[skill].map(s => s.value));
-      meanValues[skill] = groupValuesBySkill[skill].map(s => s.value).reduce((a, b) => a + b, 0) / groupValuesBySkill[skill].length;
+      values[skill] = groupValuesBySkill[skill][0].value;
     });
 
     Object.keys(groupInterestValuesBySkill).forEach(skill => {
-      interestedValues[skill] = groupInterestValuesBySkill[skill].filter(s => s.value === 'Learning').length;
-      notInterestedValues[skill] = groupInterestValuesBySkill[skill].filter(s => s.value === 'No').length;
+      interestedValues[skill] = groupInterestValuesBySkill[skill].some(s => s.value === 'Learning');
+      notInterestedValues[skill] = groupInterestValuesBySkill[skill].some(s => s.value === 'No');
     });
-
-    skillData = [maxValues, meanValues, minValues];
+    skillData = [values];
     interestData = [interestedValues, notInterestedValues];
   }
   const uniqueSkills = uniqBy(allSkills, (v) => [v.skill, v.category].join());
@@ -150,9 +142,7 @@ function MainContainer(props) {
     'learning',
     'want to learn',
     'not interested'] :
-    ['max', 'mean', 'min'];
-
-  const skillTableRanges = is2020 ? skillRanges : [4, 3, 2, 1, 0];
+    ['competency'];
 
   const colors = is2020 ? {
     learning: '#F49F0A',
@@ -163,9 +153,7 @@ function MainContainer(props) {
     'basic knowledge': '#CFF2F2',
     'no knowledge': '#ddd'
   } : {
-    'max': '#2BA4A0',
-    'mean': '#F49F0A',
-    'min': '#eee'
+    'competency': '#2BA4A0',
   };
   const interestColors = {
     interested: 'lightgreen',
@@ -174,7 +162,6 @@ function MainContainer(props) {
 
   const config = {
     skillRanges,
-    skillTableRanges,
     colors,
     interestColors,
   };
