@@ -5,8 +5,10 @@ import cx from 'classnames';
 import dynamic from 'next/dynamic';
 import Link from 'next/link'
 import ReactGA from 'react-ga';
-import styles from '../../styles/Home.module.scss';
+import homeStyles from '../../styles/Home.module.scss';
+import devMainStyles from './dev-main.module.scss';
 
+const styles = {...homeStyles, ...devMainStyles};
 const Radar = dynamic(() => import('../radar/radar'));
 const Card = dynamic(() => import('../card/card'), { ssr: false });
 
